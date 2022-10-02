@@ -9,21 +9,28 @@ app.use(cors())
 app.use(express.json())
 const url='mongodb+srv://vikas_raria:raria123@cluster0.7lq1c.mongodb.net/Employees?retryWrites=true&w=majority'
 mongoose.connect(url)
-.then(res=>console.log("connected to url"))
+.then(res=>{
+    console.log("connected to url")
+})
 
 app.get('/:id',async(req,res)=>{
     const id=req.params.id;
     const employee=await Employee.findOne({_id:id})
-    .catch(error=>console.log(error.message))
-    console.log(employee)
-    res.json(employee)
+    .catch(error=>{
+        console.log(error.message)
+        res.status(404).end()
+    })
+   
+    res.status(200).json(employee)
 })
 
-app.get('/',async (req,res)=>{
-    console.log("get")
-    const dat=await Employee.find({})  
-    console.log("Sent")
-    return res.json(dat)
+app.get('/',async (req,res)=>{    
+    const dat=await Employee.find({})
+    .catch(error=>{
+        console.log(error.message)
+        res.status(404).end()
+    })    
+    return res.status(200).json(dat)
 })
 
 app.post('/',(req,res)=>{
@@ -32,27 +39,34 @@ app.post('/',(req,res)=>{
         firstName,lastName,email,contact,gender,age
     })
     newEmp.save()
-    return res.json(newEmp)
+    .catch(error=>{
+        console.log(error.message)
+        res.status(404).end()
+    })
+    return res.status(200).json(newEmp)
 })
 
-app.put('/',async(req,res)=>{
-    console.log("Put")
+app.put('/',async(req,res)=>{   
     const {id,firstName,lastName,email,contact,gender,age}=req.body;
     const newEmp={
         firstName,lastName,email,contact,gender,age
     }
     const updated=await Employee.findByIdAndUpdate(id,newEmp,{new:true})
-    .catch(err=>console.log(err.message))
-    console.log("Putted",updated)
-    return res.json(updated)
+    .catch(error=>{
+        console.log(error.message)
+        res.status(404).end()
+    })  
+    return res.status(200).json(updated)
 })
 
-app.delete('/:id',async (req,res)=>{
-    console.log("Delete")
+app.delete('/:id',async (req,res)=>{   
     const id=req.params.id;
     await Employee.findByIdAndRemove(id)
-    console.log("Deleted")
-    return res.send("deleted")
+    .catch(error=>{
+        console.log(error.message)
+        res.status(404).end()
+    })   
+    return res.status(200).send("deleted")
 })
 const port=3008;
 

@@ -3,8 +3,7 @@ import axios from 'axios';
 const url="http://192.168.1.8:3008/";
 
 const getAllEmployees=async()=>{
-    const response=await axios.get(url);
-   // console.log(response)
+    const response=await axios.get(url);   
     return response.data;
 }
 
