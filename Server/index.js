@@ -68,7 +68,7 @@ app.delete('/:id',async (req,res)=>{
     })   
     return res.status(200).send("deleted")
 })
-const port=3008;
+const port=process.env.PORT||3008;
 
 app.listen(port,()=>{
     console.log(`server started on port ${port}`)
